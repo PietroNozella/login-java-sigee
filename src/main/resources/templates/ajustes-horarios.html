@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,7 +19,7 @@
 
         <div id="erro" class="alert alert-danger d-none" role="alert"></div>
 
-        <form id="form-horario" class="mb-4">
+        <form id="form-horario" class="mb-4" sec:authorize="hasAnyRole('ADMINISTRADOR', 'OPERADOR')">
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <label class="form-label" for="setor">Setor</label>
@@ -59,7 +59,7 @@
                     <td th:text="${horario?.diaSemana}"></td>
                     <td th:text="${horario?.horarioInicio}"></td>
                     <td th:text="${horario?.horarioFim}"></td>
-                    <td>
+                    <td sec:authorize="hasAnyRole('ADMINISTRADOR', 'OPERADOR')">
                         <button class="btn btn-danger btn-sm"
                                 th:data-id="${horario.id}"
                                 onclick="deletarHorario(this)">Deletar</button>

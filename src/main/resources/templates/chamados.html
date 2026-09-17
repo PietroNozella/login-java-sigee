@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <title>Lista de Chamados</title>
@@ -39,7 +39,7 @@
                         <td th:text="${chamado?.tipo}"></td>
                         <td th:text="${chamado?.tecnico}"></td>
                         <td th:text="${chamado?.usuario}"></td>
-                        <td>
+                        <td sec:authorize="hasAnyRole('ADMINISTRADOR', 'OPERADOR')">
                             <a th:href="@{/chamados/novo}" class="btn btn-primary btn-sm">Novo</a>
                             <a th:href="@{'/chamados/atualizar/' + ${chamado.id}}" class="btn btn-warning btn-sm">Editar</a>
                             <form th:action="@{'/chamados/cancelar/' + ${chamado.id}}" method="post" class="d-inline">

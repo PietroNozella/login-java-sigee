@@ -39,10 +39,7 @@ public class HomeController {
     @GetMapping("/chamados")
     public String chamados(Model model) {
         List<Chamado> chamados = chamadoService.listarChamados();
-        model.addAttribute("chamados", chamados); // Passa a lista para o modelo
-        String fragment = "chamados :: content";
-        log.info("Carregando fragmento: {}", fragment); // Log para depuração
-        model.addAttribute("content", fragment);
+        model.addAttribute("chamados", chamados);
         return "chamados";
     }
 
@@ -50,9 +47,6 @@ public class HomeController {
     public String clientes(Model model) {
         List<Cliente> clientes = clienteService.listarClientes();
         model.addAttribute("clientes", clientes);
-        String fragment = "clientes :: content";
-        log.info("Carregando fragmento: {}", fragment); // Log para depuração
-        model.addAttribute("content", fragment);
         return "clientes";
     }
     
@@ -60,9 +54,6 @@ public class HomeController {
     public String horarios(Model model) {
         List<HorarioAtendimento> horarios = horarioAtendimentoService.listarTodos();
         model.addAttribute("horarios", horarios);
-        String fragment = "ajustes-horarios :: content";
-        log.info("Carregando fragmento: {}", fragment); // Log para depuração
-        model.addAttribute("content", fragment);
         return "ajustes-horarios";
     }
 

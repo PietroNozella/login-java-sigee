@@ -27,6 +27,9 @@ public class SecurityConfig {
                         "/css/**", "/js/**", "/images/**", "/error").permitAll()
                 // Cadastro de usuários e auditoria: só Administrador (igual ao SIGEE).
                 .requestMatchers("/usuarios/**", "/auditoria/**").hasRole("ADMINISTRADOR")
+                // Escrita em chamados: só Administrador e Operador (alinhado à API).
+                .requestMatchers("/chamados/novo", "/chamados/atualizar/**", "/chamados/cancelar/**")
+                    .hasAnyRole("ADMINISTRADOR", "OPERADOR")
                 .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
                 .requestMatchers("/api/**").hasAnyRole("ADMINISTRADOR", "OPERADOR")
                 .anyRequest().authenticated()
