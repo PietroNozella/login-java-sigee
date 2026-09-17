@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: login-sigee-mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - login-sigee-mongo-data:/data/db
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: login-sigee-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/loginsigee
+    restart: unless-stopped
+
+volumes:
+  login-sigee-mongo-data:
