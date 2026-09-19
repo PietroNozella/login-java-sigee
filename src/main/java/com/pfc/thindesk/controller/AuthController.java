@@ -1,21 +1,26 @@
 package com.pfc.thindesk.controller;
 
-import com.pfc.thindesk.entity.PasswordResetToken;
 import com.pfc.thindesk.entity.Perfil;
 import com.pfc.thindesk.entity.RegistroAuditoria;
+import com.pfc.thindesk.dto.CadastroUsuarioForm;
 import com.pfc.thindesk.service.AuditoriaService;
+import com.pfc.thindesk.service.PasswordResetEmailService;
 import com.pfc.thindesk.service.UsuarioService;
 import java.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
@@ -28,6 +33,9 @@ public class AuthController {
 
     @Autowired
     private AuditoriaService auditoriaService;
+
+    @Autowired
+    private PasswordResetEmailService passwordResetEmailService;
 
     @GetMapping("/login")
     public String login() {
@@ -42,29 +50,31 @@ public class AuthController {
     // --- Cadastro controlado: só ADMINISTRADOR (regra também no SecurityConfig) ---
     @GetMapping("/usuarios/novo")
     public String novoUsuarioForm(Model model) {
+        model.addAttribute("form", new CadastroUsuarioForm());
         model.addAttribute("perfis", Perfil.values());
         return "usuarios-novo";
     }
 
     @PostMapping("/usuarios/novo")
     public String novoUsuario(
-            @RequestParam String nome,
-            @RequestParam String sobrenome,
-            @RequestParam String email,
-            @RequestParam String username,
-            @RequestParam String senha,
-            @RequestParam Perfil perfil,
+            @Valid @ModelAttribute("form") CadastroUsuarioForm form,
+            BindingResult bindingResult,
             Model model,
             RedirectAttributes redirect,
             Principal principal,
             HttpServletRequest request) {
-        if (senha == null || senha.length() < 8) {
-            model.addAttribute("erro", "A senha inicial deve ter ao menos 8 caracteres.");
+        if (bindingResult.hasErrors()) {
             model.addAttribute("perfis", Perfil.values());
             return "usuarios-novo";
         }
         try {
-            var cadastrado = usuarioService.cadastrar(nome, sobrenome, email, username, senha, perfil);
+            var cadastrado = usuarioService.cadastrar(
+                    form.getNome().trim(),
+                    form.getSobrenome().trim(),
+                    form.getEmail().trim().toLowerCase(),
+                    form.getUsername().trim(),
+                    form.getSenha(),
+                    form.getPerfil());
             auditoriaService.registrar(principal.getName(), RegistroAuditoria.Acao.USUARIO_CADASTRADO,
                     RegistroAuditoria.Resultado.SUCESSO, "Usuario", cadastrado.getId(),
                     AuditoriaService.ip(request));
@@ -92,8 +102,8 @@ public class AuthController {
             @RequestParam String senhaNova,
             Model model,
             HttpServletRequest request) {
-        if (senhaNova == null || senhaNova.length() < 8) {
-            model.addAttribute("erro", "A nova senha deve ter ao menos 8 caracteres.");
+        if (senhaNova == null || senhaNova.length() < 8 || senhaNova.length() > 72) {
+            model.addAttribute("erro", "A nova senha deve ter entre 8 e 72 caracteres.");
             return "minha-senha";
         }
         try {
@@ -118,15 +128,19 @@ public class AuthController {
 
     @PostMapping("/esqueci-senha")
     public String esqueci(@RequestParam String email, Model model, HttpServletRequest request) {
-        PasswordResetToken reset = usuarioService.solicitarRecovery(email);
+        String token = usuarioService.solicitarRecovery(email.trim().toLowerCase());
         auditoriaService.registrar(email, RegistroAuditoria.Acao.RECOVERY_SOLICITADO,
                 RegistroAuditoria.Resultado.SUCESSO, AuditoriaService.ip(request));
         // Mensagem sempre igual, exista ou não a conta.
-        model.addAttribute("ok", "Se houver uma conta com esse e-mail, um link de redefinição foi gerado.");
-        if (reset != null) {
-            log.info("Token de recovery gerado para {}", email);
-            // Sem servidor de e-mail no PFC: exibe o link uma única vez.
-            model.addAttribute("link", "/redefinir-senha/" + reset.getToken());
+        model.addAttribute("ok", "Se houver uma conta com esse e-mail, enviaremos um link de redefinição.");
+        if (token != null) {
+            try {
+                passwordResetEmailService.enviar(email, token);
+                log.info("E-mail de recuperação enviado.");
+            } catch (MailException e) {
+                // A resposta permanece neutra para não revelar se o e-mail existe.
+                log.error("Não foi possível enviar o e-mail de recuperação.", e);
+            }
         }
         return "esqueci-senha";
     }
@@ -143,8 +157,8 @@ public class AuthController {
             @RequestParam String senhaNova,
             Model model,
             HttpServletRequest request) {
-        if (senhaNova == null || senhaNova.length() < 8) {
-            model.addAttribute("erro", "A nova senha deve ter ao menos 8 caracteres.");
+        if (senhaNova == null || senhaNova.length() < 8 || senhaNova.length() > 72) {
+            model.addAttribute("erro", "A nova senha deve ter entre 8 e 72 caracteres.");
             model.addAttribute("token", token);
             return "redefinir-senha";
         }

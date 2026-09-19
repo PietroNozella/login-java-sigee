@@ -22,7 +22,7 @@
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <div class="mb-3">
                     <label class="form-label" for="senhaNova">Nova senha (mín. 8 caracteres)</label>
-                    <input class="form-control" id="senhaNova" type="password" name="senhaNova" autocomplete="new-password" required minlength="8">
+                    <input class="form-control" id="senhaNova" type="password" name="senhaNova" autocomplete="new-password" required minlength="8" maxlength="72">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Redefinir</button>
             </form>

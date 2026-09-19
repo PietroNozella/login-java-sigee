@@ -16,6 +16,7 @@ public class PasswordResetToken {
     private String token;
 
     private String usuarioId;
+    @Indexed(expireAfter = "0s")
     private Instant expiraEm;
     private boolean usado = false;
 

@@ -7,6 +7,10 @@ import com.pfc.thindesk.repository.PasswordResetTokenRepository;
 import com.pfc.thindesk.repository.UsuarioRepository;
 import java.time.Duration;
 import java.time.Instant;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,21 +77,23 @@ public class UsuarioService {
 
     // Gera token de uso único. Sem servidor de e-mail no PFC, o token é
     // exibido uma vez na tela de confirmação (e registrado em log).
-    public PasswordResetToken solicitarRecovery(String email) {
+    public String solicitarRecovery(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
         if (usuario == null) {
             return null; // resposta neutra: não revela se o e-mail existe
         }
+        String tokenOriginal = UUID.randomUUID().toString().replace("-", "");
         PasswordResetToken reset = new PasswordResetToken();
-        reset.setToken(UUID.randomUUID().toString().replace("-", ""));
+        reset.setToken(hashToken(tokenOriginal));
         reset.setUsuarioId(usuario.getId());
         reset.setExpiraEm(Instant.now().plus(Duration.ofMinutes(tokenMinutos)));
         reset.setUsado(false);
-        return tokenRepository.save(reset);
+        tokenRepository.save(reset);
+        return tokenOriginal;
     }
 
     public void redefinirSenha(String token, String senhaNova) {
-        PasswordResetToken reset = tokenRepository.findByToken(token)
+        PasswordResetToken reset = tokenRepository.findByToken(hashToken(token))
                 .orElseThrow(() -> new IllegalArgumentException("Link inválido."));
         if (reset.isUsado() || reset.expirado()) {
             throw new IllegalArgumentException("Link expirado ou já utilizado.");
@@ -100,6 +106,15 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         reset.setUsado(true);
         tokenRepository.save(reset);
+    }
+
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            return HexFormat.of().formatHex(digest.digest(token.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 não está disponível.", e);
+        }
     }
 
     // Retorna true se a conta acabou de ser bloqueada nesta tentativa.

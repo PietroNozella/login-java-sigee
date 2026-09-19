@@ -30,7 +30,7 @@ public class AdminSeed implements CommandLineRunner {
     @Value("${app.admin.username:admin}")
     private String adminUsername;
 
-    @Value("${app.admin.password:thindesk123}")
+    @Value("${app.admin.password}")
     private String adminPassword;
 
     @Value("${app.admin.email:admin@thindesk.local}")

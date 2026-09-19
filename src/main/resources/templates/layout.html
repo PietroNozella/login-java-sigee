@@ -21,7 +21,7 @@
 
         <!-- Conteúdo Principal -->
         <main class="container-fluid mt-4">
-            <div th:replace="~{home :: content}"></div> <!-- Substitui o conteúdo dinamicamente -->
+            <div th:replace="${content}"></div>
         </main>
 
         <script th:src="@{/js/script.js}"></script>
