@@ -19,13 +19,14 @@ Confere a senha atual antes de gravar a nova (também com hash). Erro "Senha atu
 ## Esqueci minha senha (`UsuarioService.java:76-104`)
 
 ```java
-reset.setToken(UUID.randomUUID().toString().replace("-", ""));
+String tokenOriginal = UUID.randomUUID().toString().replace("-", "");
+reset.setToken(hashToken(tokenOriginal)); // SHA-256: o banco guarda só o hash
 reset.setExpiraEm(Instant.now().plus(Duration.ofMinutes(tokenMinutos)));
 ```
 
 1. `POST /esqueci-senha` gera um token aleatório de uso único, válido por 60 min.
 2. Resposta **sempre igual** ("se houver conta, o link foi gerado") — não revela se o e-mail existe.
-3. Sem servidor de e-mail no projeto, o link aparece uma vez na tela (limitação documentada).
+3. O link vai por e-mail via SMTP configurado (Mailpit no Docker local); o token original nunca é persistido nem exibido em tela.
 4. `POST /redefinir-senha/{token}` valida (inexistente/usado/expirado = erro), grava a nova senha e **destrava a conta** — faz sentido: quem tem o e-mail provou ser o dono.
 
 ## Bloqueio em números (`UsuarioService.java:106-126`, `Usuario.java:28-29`)

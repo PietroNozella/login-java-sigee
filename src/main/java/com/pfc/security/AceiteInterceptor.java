@@ -1,6 +1,6 @@
 package com.pfc.security;
 
-import com.pfc.thindesk.repository.UsuarioRepository;
+import com.pfc.sigee.repository.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.pfc;
 
-import com.pfc.thindesk.entity.Perfil;
-import com.pfc.thindesk.entity.Usuario;
-import com.pfc.thindesk.repository.UsuarioRepository;
+import com.pfc.sigee.entity.Perfil;
+import com.pfc.sigee.entity.Usuario;
+import com.pfc.sigee.repository.UsuarioRepository;
 import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class AdminSeed implements CommandLineRunner {
     @Value("${app.admin.password}")
     private String adminPassword;
 
-    @Value("${app.admin.email:admin@thindesk.local}")
+    @Value("${app.admin.email:admin@sigee.local}")
     private String adminEmail;
 
     @Value("${app.admin.nome:Administrador}")

@@ -28,4 +28,4 @@
    Domínio de chamados = base do professor adaptada (bugs de rota corrigidos, CRUD completado). Todo o resto de acesso = espelho do login do SIGEE, traduzido de stack.
 
 10. **O que ficou de fora e por quê?**
-    Envio de e-mail (sem SMTP; link exibido na tela), testes automatizados, MFA. Decisão de escopo de PFC, tudo registrado no README e na análise do projeto.
+    MFA e testes E2E. Decisão de escopo de PFC: o recovery por e-mail (SMTP/Mailpit) e os testes unitários de cadastro, hash e tokens já estão implementados.

@@ -1,8 +1,8 @@
 package com.pfc.security;
 
-import com.pfc.thindesk.entity.RegistroAuditoria;
-import com.pfc.thindesk.service.AuditoriaService;
-import com.pfc.thindesk.service.UsuarioService;
+import com.pfc.sigee.entity.RegistroAuditoria;
+import com.pfc.sigee.service.AuditoriaService;
+import com.pfc.sigee.service.UsuarioService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
