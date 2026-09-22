@@ -35,6 +35,20 @@ As regras de autenticação ficam centralizadas no Spring Security. Controllers 
 validam os dados, services aplicam as regras e repositories cuidam da persistência. Essa
 separação permite trocar textos, imagens e templates sem alterar a lógica de login.
 
+## Temas visuais
+
+O `layout.html` aplica a classe `tema-<nome>` no `<body>` (valor de `APP_TEMA_NOME`,
+padrão `padrao`, exposto via `TemaControllerAdvice`) e carrega
+`static/css/tema-padrao.css`, que define as cores em variáveis CSS (`--tema-*`).
+
+Para criar um tema novo:
+
+1. Copie `static/css/tema-padrao.css` para `static/css/tema-<nome>.css` e ajuste as variáveis.
+2. Defina `APP_TEMA_NOME=<nome>` no `.env`.
+3. Opcional: ajuste `fragments/sidebar.html` e `images/logo.png`.
+
+Nenhum arquivo Java precisa ser alterado.
+
 ## Execução com Docker
 
 Pré-requisito: Docker com Compose.

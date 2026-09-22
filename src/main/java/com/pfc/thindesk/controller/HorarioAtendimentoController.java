@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ajustes-horarios")
+// API JSON de horários de atendimento (escrita restrita a ADMIN/OPERADOR via SecurityConfig).
+// A tela vive em HomeController (/ajustes-horarios).
 public class HorarioAtendimentoController {
 
     @Autowired

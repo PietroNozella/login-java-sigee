@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// Horário de atendimento por setor e dia da semana (coleção "horariosAtendimento").
+// Gerenciado via HorarioAtendimentoService; tela em /ajustes-horarios, JSON em /api/ajustes-horarios.
 public class HorarioAtendimento {
 
     @Id

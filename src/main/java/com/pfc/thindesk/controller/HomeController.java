@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+// Rotas MVC das telas principais: home (/), chamados, clientes e ajustes de horários.
+// Cada método devolve um template Thymeleaf; a lógica de negócio está nos *Service.
 public class HomeController {
 
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);

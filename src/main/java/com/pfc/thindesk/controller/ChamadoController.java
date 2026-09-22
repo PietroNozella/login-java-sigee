@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/chamados")
+// API JSON de chamados (leitura para todos autenticados, escrita só ADMIN/OPERADOR via SecurityConfig).
+// As telas MVC correspondentes vivem em ChamadoViewController (/chamados).
 public class ChamadoController {
 
     @Autowired

@@ -8,6 +8,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
+// API JSON de clientes (mesma regra de acesso da API de chamados).
+// A tela de listagem vive em HomeController (/clientes).
 public class ClienteController {
 
     @Autowired

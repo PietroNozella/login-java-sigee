@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "chamados")
+// Documento de chamado de suporte (coleção "chamados").
+// Criado/lido via ChamadoService; telas em ChamadoViewController, JSON em /api/chamados.
 public class Chamado{
     
     @Id

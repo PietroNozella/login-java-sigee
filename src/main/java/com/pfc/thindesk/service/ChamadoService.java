@@ -7,6 +7,8 @@ import java.util.List;
 import com.pfc.thindesk.repository.ChamadoRepository;
 
 @Service
+// Regras de chamados: criar, listar, buscar, atualizar e cancelar (status=CANCELADO).
+// Persistência via ChamadoRepository (coleção "chamados").
 public class ChamadoService {
 
     @Autowired

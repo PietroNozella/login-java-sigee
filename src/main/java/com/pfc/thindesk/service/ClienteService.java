@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+// Cadastro e listagem de clientes via ClienteRepository (coleção "clientes").
 public class ClienteService {
 
     @Autowired

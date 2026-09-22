@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+// CRUD de horários de atendimento via HorarioAtendimentoRepository.
+// Tela em /ajustes-horarios, JSON em /api/ajustes-horarios.
 public class HorarioAtendimentoService {
 
     @Autowired

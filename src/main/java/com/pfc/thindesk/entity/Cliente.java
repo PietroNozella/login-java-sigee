@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "clientes")
+// Cadastro de cliente (coleção "clientes").
+// Persistido via ClienteService; telas em HomeController (/clientes), JSON em /api/clientes.
 public class Cliente {
     
     @Id
